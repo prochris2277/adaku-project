@@ -7,7 +7,7 @@ const TodoForm = ({ handleCreateTask, task, setTask }) => {
         type="text"
         value={task}
         onChange={(e) => setTask(e.target.value)}
-        placeholder="Buy groceries"
+        placeholder="Enter tasks"
         className="flex-1 border border-gray-300 bg-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-blue-500 dark:bg-gray-900 dark:border-gray-500 "
       />
 

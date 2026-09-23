@@ -9,6 +9,7 @@ const Header = ({theme, setTheme}) => {
         { theme === "light" ? <Moon /> : <Sun />}
       </button>
     </header>
+      
   );
 };
 
