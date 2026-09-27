@@ -61,52 +61,68 @@ const App = () => {
 
 
 
-  const handleToggleCompleted = async (id) => {
-    const todo = todos.find((todo) => todo.id === id);
+   const handleToggleCompleted = async (id) => {
+  const todo = todos.find((todo) => todo.id === id);
 
-    const newStatus = todo.status === "completed" ? "pending" : "completed";
+  if (!todo) {
+    console.error("Task not found:", id);
+    return;
+  }
 
-    try {
-      const response = await fetch(`${API_URL}/api/v1/tasks/${id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          status: newStatus,
-        }),
-      });
+  const newStatus =
+    todo.status === "completed" ? "pending" : "completed";
 
-      if (!response.ok) {
-        throw new Error("Failed to update task status");
-      }
+  try {
+    const response = await fetch(`${API_URL}/api/v1/tasks/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        status: newStatus,
+      }),
+    });
 
-      const data = await response.json();
-
-      setTodos(todos.map((todo) => (todo.id === id ? data.data.task : todo)));
-    } catch (error) {
-      console.error("Toggle task error:", error);
-      alert("Could not update task. Please try again.");
+    if (!response.ok) {
+      throw new Error("Failed to update task status");
     }
-  };
+
+    const data = await response.json();
+
+    setTodos(
+      todos.map((todo) =>
+        todo.id === id ? data.data.task : todo
+      )
+    );
+
+  } catch (error) {
+    console.error("Toggle task error:", error);
+    alert("Could not update task. Please try again.");
+  }
+};
 
 
-  const handleDelete = async (id) => {
-    try {
-      const response = await fetch(`${API_URL}/api/v1/tasks/${id}`, {
-        method: "DELETE",
-      });
+   const handleDelete = async (id) => {
+  try {
+    const response = await fetch(`${API_URL}/api/v1/tasks/${id}`, {
+      method: "DELETE",
+    });
 
-      const data = await response.json();
-
-      console.log("Deleted task:", data);
-
-      setTodos(todos.filter((todo) => todo.id !== id));
-    } catch (error) {
-      console.error("Delete task error:", error);
-      alert("Could not delete task. Please try again.");
+    if (!response.ok) {
+      throw new Error("Failed to delete task");
     }
-  };
+
+    const data = await response.json();
+
+    console.log("Deleted task:", data);
+
+    setTodos(todos.filter((todo) => todo.id !== id));
+
+  } catch (error) {
+    console.error("Delete task error:", error);
+    alert("Could not delete task. Please try again.");
+  }
+};
 
 
   const handleSave = async () => {
@@ -143,7 +159,7 @@ const App = () => {
     }
   };
 
-  
+
   const handleEdit = (todo) => {
     setEditingId(todo.id);
     setEditingTask(todo.title);
